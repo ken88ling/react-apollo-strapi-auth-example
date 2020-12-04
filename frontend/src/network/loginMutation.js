@@ -1,6 +1,6 @@
-import gql from "graphql-tag";
-import { useMutation } from "@apollo/react-hooks";
-import { useAuthToken } from "../config/auth";
+import gql from 'graphql-tag';
+import { useMutation } from '@apollo/react-hooks';
+import { useAuthToken } from '../config/auth';
 
 export const loginMutationGQL = gql`
   mutation login($login: String!, $password: String!) {
@@ -11,7 +11,7 @@ export const loginMutationGQL = gql`
 `;
 
 export const useLoginMutation = () => {
-  const [_, setAuthToken, removeAuthtoken] = useAuthToken();
+  const [, setAuthToken, removeAuthtoken] = useAuthToken();
 
   const [mutation, mutationResults] = useMutation(loginMutationGQL, {
     onCompleted: (data) => {
@@ -20,14 +20,20 @@ export const useLoginMutation = () => {
   });
 
   // full login function
-  const login = (user, password) => {
+  const login = async (user, password) => {
+    console.log('test', user);
+    console.log('test', password);
     removeAuthtoken();
-    return mutation({
+    const result = await mutation({
       variables: {
         login: user,
         password,
       },
     });
-  }
-  return [login, mutationResults]
+
+    console.log('result', result);
+    return result;
+  };
+
+  return [login, mutationResults];
 };
